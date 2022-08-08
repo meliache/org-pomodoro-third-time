@@ -206,6 +206,13 @@ Format: value returned by ‘encode-time’.")
     ;; Reset bank, since the bank has already been applied to this break.
     (org-pomodoro-third-time--reset-bank)))
 
+(defun org-pomodoro-third-time-format-bank-seconds ()
+  (format-seconds org-pomodoro-time-format org-pomodoro-third-time--bank-seconds))
+
+(defun org-pomodoro-message-bank-time ()
+  (interactive)
+  (message "bank time: %s" (org-pomodoro-third-time-format-bank-seconds)))
+
 (defun org-pomodoro-third-time--update-bank (fn state)
   "Update the bank if the break is shorter or longer than calculated.
 Argument FN contains the original function advised by this.
@@ -222,9 +229,10 @@ Argument STATE contains the STATE argument passed to ‘org-pomodoro-start’."
       (message "actual-break-time %.3f delta %.3f" actual-break-time delta)
       (setq org-pomodoro-third-time--bank-seconds
             (+ org-pomodoro-third-time--bank-seconds delta))
-      (message "bank seconds %.3f" org-pomodoro-third-time--bank-seconds)
+      (org-pomodoro-message-bank-time)
       (setq org-pomodoro-third-time--expected-break-time nil)))
-  (message "bank seconds %.3f" org-pomodoro-third-time--bank-seconds)
+
+  (org-pomodoro-message-bank-time)
   (funcall fn state))
 
 (defun org-pomodoro-third-time--reset-bank ()
